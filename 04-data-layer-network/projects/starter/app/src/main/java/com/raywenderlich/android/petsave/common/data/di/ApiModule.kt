@@ -43,44 +43,52 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object ApiModule {
 
-  fun provideApi(builder: Retrofit.Builder): PetFinderApi {
-    return builder
-        .build()
-        .create(PetFinderApi::class.java)
-  }
+    @Provides
+    @Singleton
+    fun provideApi(builder: Retrofit.Builder): PetFinderApi {
+        return builder
+            .build()
+            .create(PetFinderApi::class.java)
+    }
 
-  fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
-    return Retrofit.Builder()
-        .baseUrl(ApiConstants.BASE_ENDPOINT)
-        .client(okHttpClient)
-        .addConverterFactory(MoshiConverterFactory.create())
-  }
+    @Provides
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit.Builder {
+        return Retrofit.Builder()
+            .baseUrl(ApiConstants.BASE_ENDPOINT)
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create())
+    }
 
-  fun provideOkHttpClient(
-      httpLoggingInterceptor: HttpLoggingInterceptor,
-      networkStatusInterceptor: NetworkStatusInterceptor,
-      authenticationInterceptor: AuthenticationInterceptor
-  ): OkHttpClient {
-    return OkHttpClient.Builder()
-        .addInterceptor(networkStatusInterceptor)
-        .addInterceptor(authenticationInterceptor)
-        .addInterceptor(httpLoggingInterceptor)
-        .build()
-  }
+    @Provides
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        networkStatusInterceptor: NetworkStatusInterceptor,
+        authenticationInterceptor: AuthenticationInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(networkStatusInterceptor)
+            .addInterceptor(authenticationInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
+            .build()
+    }
 
-  fun provideHttpLoggingInterceptor(loggingInterceptor: LoggingInterceptor): HttpLoggingInterceptor {
-    val interceptor = HttpLoggingInterceptor(loggingInterceptor)
+    @Provides
+    fun provideHttpLoggingInterceptor(loggingInterceptor: LoggingInterceptor): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor(loggingInterceptor)
 
-    interceptor.level = HttpLoggingInterceptor.Level.BODY
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
 
-    return interceptor
-  }
+        return interceptor
+    }
 }
