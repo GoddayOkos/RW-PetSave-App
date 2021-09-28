@@ -42,14 +42,15 @@ import com.raywenderlich.android.petsave.common.data.cache.model.cachedorganizat
 
 @Database(
     entities = [
-      CachedPhoto::class,
-      CachedVideo::class,
-      CachedTag::class,
-      CachedAnimalWithDetails::class,
-      CachedOrganization::class
+        CachedPhoto::class,
+        CachedVideo::class,
+        CachedTag::class,
+        CachedAnimalWithDetails::class,
+        CachedOrganization::class,
+        CachedAnimalTagCrossRef::class
     ],
     version = 1
 )
 abstract class PetSaveDatabase : RoomDatabase() {
-  abstract fun organizationsDao(): OrganizationsDao
+    abstract fun organizationsDao(): OrganizationsDao
 }

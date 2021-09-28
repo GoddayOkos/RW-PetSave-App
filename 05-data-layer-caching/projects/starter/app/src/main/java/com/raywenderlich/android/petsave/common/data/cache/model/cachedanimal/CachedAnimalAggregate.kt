@@ -35,6 +35,7 @@
 package com.raywenderlich.android.petsave.common.data.cache.model.cachedanimal
 
 import androidx.room.Embedded
+import androidx.room.Junction
 import androidx.room.Relation
 import com.raywenderlich.android.petsave.common.domain.model.animal.details.AnimalWithDetails
 
@@ -51,6 +52,11 @@ data class CachedAnimalAggregate(
         entityColumn = "animalId"
     )
     val videos: List<CachedVideo>,
+    @Relation(
+        parentColumn = "animalId",
+        entityColumn = "tag",
+        associateBy = Junction(CachedAnimalTagCrossRef::class)
+    )
     val tags: List<CachedTag>
 ) {
 
