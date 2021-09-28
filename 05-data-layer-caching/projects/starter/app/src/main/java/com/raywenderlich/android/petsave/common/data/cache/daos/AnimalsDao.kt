@@ -17,4 +17,16 @@ abstract class AnimalsDao {
         videos: List<CachedVideo>,
         tags: List<CachedTag>
     )
+
+    suspend fun insertAnimalsWithDetails(animalAggregates:
+                 List<CachedAnimalAggregate>) {
+        for (animalAggregate in animalAggregates) {
+            insertAnimalAggregate(
+                animalAggregate.animal,
+                animalAggregate.photos,
+                animalAggregate.videos,
+                animalAggregate.tags
+            )
+        }
+    }
 }
