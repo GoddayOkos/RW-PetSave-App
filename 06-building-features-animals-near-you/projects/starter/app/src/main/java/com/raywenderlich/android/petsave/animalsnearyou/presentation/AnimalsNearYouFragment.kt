@@ -43,7 +43,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.raywenderlich.android.petsave.common.presentation.AnimalsAdapter
 import com.raywenderlich.android.petsave.databinding.FragmentAnimalsNearYouBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AnimalsNearYouFragment : Fragment() {
 
     companion object {

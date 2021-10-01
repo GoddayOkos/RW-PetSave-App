@@ -48,6 +48,7 @@ import dagger.hilt.android.AndroidEntryPoint
 /**
  * Main Screen
  */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
   private lateinit var binding: ActivityMainBinding

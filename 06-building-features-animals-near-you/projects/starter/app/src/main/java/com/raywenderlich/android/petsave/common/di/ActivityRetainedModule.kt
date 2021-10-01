@@ -50,7 +50,10 @@ import io.reactivex.disposables.CompositeDisposable
 @InstallIn(ActivityRetainedComponent::class)
 abstract class ActivityRetainedModule {
 
-  // bind repository here
+  @Binds
+  @ActivityRetainedScoped
+  abstract fun bindAnimalRepository(repository: PetFinderAnimalRepository):
+          AnimalRepository
 
   @Binds
   abstract fun bindDispatchersProvider(dispatchersProvider: CoroutineDispatchersProvider):
