@@ -23,7 +23,7 @@ buildscript {
     rxjava_version = "2.2.19"
     rxkotlin_version = "2.4.0"
     rxandroid_version = "2.1.1"
-    hilt_version = '2.28.3-alpha'
+    hilt_version = '2.38.1'
     androidx_hilt_version = "1.0.0-alpha02"
     nav_version = "2.3.1"
     retrofit_version = "2.9.0"

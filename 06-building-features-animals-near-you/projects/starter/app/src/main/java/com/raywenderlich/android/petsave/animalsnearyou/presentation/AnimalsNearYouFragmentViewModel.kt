@@ -14,11 +14,15 @@ import com.raywenderlich.android.petsave.common.presentation.Event
 import com.raywenderlich.android.petsave.common.presentation.model.mappers.UiAnimalMapper
 import com.raywenderlich.android.petsave.common.utils.DispatchersProvider
 import com.raywenderlich.android.petsave.common.utils.createExceptionHandler
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class AnimalsNearYouFragmentViewModel constructor(
+@HiltViewModel
+class AnimalsNearYouFragmentViewModel @Inject constructor(
     private val requestNextPageOfAnimals: RequestNextPageOfAnimals,
     private val uiAnimalMapper: UiAnimalMapper,
     private val dispatchersProvider: DispatchersProvider,
