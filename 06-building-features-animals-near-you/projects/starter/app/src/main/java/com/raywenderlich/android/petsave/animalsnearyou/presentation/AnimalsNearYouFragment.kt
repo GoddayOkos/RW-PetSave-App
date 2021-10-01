@@ -39,6 +39,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.raywenderlich.android.petsave.common.presentation.AnimalsAdapter
 import com.raywenderlich.android.petsave.databinding.FragmentAnimalsNearYouBinding
@@ -49,6 +50,7 @@ class AnimalsNearYouFragment : Fragment() {
         private const val ITEMS_PER_ROW = 2
     }
 
+    private val viewModel: AnimalsNearYouFragmentViewModel by viewModels()
     private val binding get() = _binding!!
 
     private var _binding: FragmentAnimalsNearYouBinding? = null
@@ -66,6 +68,7 @@ class AnimalsNearYouFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
+        requestInitialAnimalsList()
     }
 
     override fun onDestroyView() {
@@ -88,5 +91,9 @@ class AnimalsNearYouFragment : Fragment() {
             layoutManager = GridLayoutManager(requireContext(), ITEMS_PER_ROW)
             setHasFixedSize(true)
         }
+    }
+
+    private fun requestInitialAnimalsList() {
+        viewModel.onEvent(AnimalNearYouEvent.RequestInitialAnimalsList)
     }
 }
