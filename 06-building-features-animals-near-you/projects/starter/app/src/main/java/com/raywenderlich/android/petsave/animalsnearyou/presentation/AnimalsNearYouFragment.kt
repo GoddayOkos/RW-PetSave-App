@@ -63,30 +63,30 @@ class AnimalsNearYouFragment : Fragment() {
         return binding.root
     }
 
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    setupUI()
-  }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupUI()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-  private fun setupUI() {
-    val adapter = createAdapter()
-    setupRecyclerView(adapter)
-  }
-
-  private fun createAdapter(): AnimalsAdapter {
-    return AnimalsAdapter()
-  }
-
-  private fun setupRecyclerView(animalsNearYouAdapter: AnimalsAdapter) {
-    binding.animalsRecyclerView.apply {
-      adapter = animalsNearYouAdapter
-      layoutManager = GridLayoutManager(requireContext(), ITEMS_PER_ROW)
-      setHasFixedSize(true)
+    private fun setupUI() {
+        val adapter = createAdapter()
+        setupRecyclerView(adapter)
     }
-  }
+
+    private fun createAdapter(): AnimalsAdapter {
+        return AnimalsAdapter()
+    }
+
+    private fun setupRecyclerView(animalsNearYouAdapter: AnimalsAdapter) {
+        binding.animalsRecyclerView.apply {
+            adapter = animalsNearYouAdapter
+            layoutManager = GridLayoutManager(requireContext(), ITEMS_PER_ROW)
+            setHasFixedSize(true)
+        }
+    }
 }
