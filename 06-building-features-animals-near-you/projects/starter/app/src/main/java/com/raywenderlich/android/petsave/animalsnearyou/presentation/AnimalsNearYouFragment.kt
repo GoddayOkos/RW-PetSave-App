@@ -42,6 +42,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.raywenderlich.android.petsave.R
 import com.raywenderlich.android.petsave.common.presentation.AnimalsAdapter
@@ -97,7 +98,27 @@ class AnimalsNearYouFragment : Fragment() {
             adapter = animalsNearYouAdapter
             layoutManager = GridLayoutManager(requireContext(), ITEMS_PER_ROW)
             setHasFixedSize(true)
+            addOnScrollListener(createInfiniteScrollListener(layoutManager as GridLayoutManager))
         }
+    }
+
+    private fun createInfiniteScrollListener(
+        layoutManager: GridLayoutManager
+    ): RecyclerView.OnScrollListener {
+        return object : InfiniteScrollListener(
+            layoutManager,
+            AnimalsNearYouFragmentViewModel.UI_PAGE_SIZE
+        ) {
+            override fun loadMoreItems() { requestMoreAnimals() }
+
+            override fun isLastPage(): Boolean = viewModel.isLastPage
+
+            override fun isLoading(): Boolean = viewModel.isLoadingMoreAnimals
+        }
+    }
+
+    private fun requestMoreAnimals() {
+        viewModel.onEvent(AnimalNearYouEvent.RequestMoreAnimals)
     }
 
     private fun observeViewStateUpdates(adapter: AnimalsAdapter) {
