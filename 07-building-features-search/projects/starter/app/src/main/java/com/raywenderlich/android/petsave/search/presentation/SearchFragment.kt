@@ -56,94 +56,117 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
 
-  companion object {
-    private const val ITEMS_PER_ROW = 2
-  }
-
-  private val binding get() = _binding!!
-  private var _binding: FragmentSearchBinding? = null
-
-  private val viewModel: SearchFragmentViewModel by viewModels()
-
-  override fun onCreateView(
-      inflater: LayoutInflater,
-      container: ViewGroup?,
-      savedInstanceState: Bundle?
-  ): View? {
-    _binding = FragmentSearchBinding.inflate(inflater, container, false)
-
-    return binding.root
-  }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-
-    setupUI()
-  }
-
-  private fun setupUI() {
-    val adapter = createAdapter()
-    setupRecyclerView(adapter)
-    observeViewStateUpdates(adapter)
-  }
-
-  private fun createAdapter(): AnimalsAdapter {
-    return AnimalsAdapter()
-  }
-
-  private fun setupRecyclerView(searchAdapter: AnimalsAdapter) {
-    binding.searchRecyclerView.apply {
-      adapter = searchAdapter
-      layoutManager = GridLayoutManager(requireContext(), ITEMS_PER_ROW)
-      setHasFixedSize(true)
-    }
-  }
-
-  private fun observeViewStateUpdates(searchAdapter: AnimalsAdapter) {
-    viewModel.state.observe(viewLifecycleOwner) {
-      updateScreenState(it, searchAdapter)
-    }
-  }
-
-  private fun updateScreenState(newState: SearchViewState, searchAdapter: AnimalsAdapter) {
-    val (
-        inInitialState,
-        searchResults,
-        ageFilterValues,
-        typeFilterValues,
-        searchingRemotely,
-        noResultsState,
-        failure
-    ) = newState
-
-    updateInitialStateViews(inInitialState)
-
-    handleFailures(failure)
-  }
-
-  private fun updateInitialStateViews(inInitialState: Boolean) {
-    binding.initialSearchImageView.isVisible = inInitialState
-    binding.initialSearchText.isVisible = inInitialState
-  }
-
-  private fun handleFailures(failure: Event<Throwable>?) {
-    val unhandledFailure = failure?.getContentIfNotHandled() ?: return
-
-    val fallbackMessage = getString(R.string.an_error_occurred)
-    val snackbarMessage = if (unhandledFailure.message.isNullOrEmpty()) {
-      fallbackMessage
-    }
-    else {
-      unhandledFailure.message!!
+    companion object {
+        private const val ITEMS_PER_ROW = 2
     }
 
-    if (snackbarMessage.isNotEmpty()) {
-      Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT).show()
-    }
-  }
+    private val binding get() = _binding!!
+    private var _binding: FragmentSearchBinding? = null
 
-  override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
-  }
+    private val viewModel: SearchFragmentViewModel by viewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupUI()
+    }
+
+    private fun setupUI() {
+        val adapter = createAdapter()
+        setupRecyclerView(adapter)
+        observeViewStateUpdates(adapter)
+    }
+
+    private fun createAdapter(): AnimalsAdapter {
+        return AnimalsAdapter()
+    }
+
+    private fun setupRecyclerView(searchAdapter: AnimalsAdapter) {
+        binding.searchRecyclerView.apply {
+            adapter = searchAdapter
+            layoutManager = GridLayoutManager(requireContext(), ITEMS_PER_ROW)
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun setupSearchViewListener() {
+        val searchView = binding.searchWidget.search
+
+        searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    viewModel.onEvent(
+                        SearchEvent.QueryInput(query.orEmpty())
+                    )
+                    searchView.clearFocus()
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.onEvent(
+                        SearchEvent.QueryInput(newText.orEmpty())
+                    )
+                    return true
+                }
+            }
+        )
+    }
+
+    private fun observeViewStateUpdates(searchAdapter: AnimalsAdapter) {
+        viewModel.state.observe(viewLifecycleOwner) {
+            updateScreenState(it, searchAdapter)
+        }
+    }
+
+    private fun updateScreenState(newState: SearchViewState, searchAdapter: AnimalsAdapter) {
+        val (
+            inInitialState,
+            searchResults,
+            ageFilterValues,
+            typeFilterValues,
+            searchingRemotely,
+            noResultsState,
+            failure
+        ) = newState
+
+        updateInitialStateViews(inInitialState)
+
+        handleFailures(failure)
+    }
+
+    private fun updateInitialStateViews(inInitialState: Boolean) {
+        binding.initialSearchImageView.isVisible = inInitialState
+        binding.initialSearchText.isVisible = inInitialState
+    }
+
+    private fun handleFailures(failure: Event<Throwable>?) {
+        val unhandledFailure = failure?.getContentIfNotHandled() ?: return
+
+        val fallbackMessage = getString(R.string.an_error_occurred)
+        val snackbarMessage = if (unhandledFailure.message.isNullOrEmpty()) {
+            fallbackMessage
+        }
+        else {
+            unhandledFailure.message!!
+        }
+
+        if (snackbarMessage.isNotEmpty()) {
+            Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
