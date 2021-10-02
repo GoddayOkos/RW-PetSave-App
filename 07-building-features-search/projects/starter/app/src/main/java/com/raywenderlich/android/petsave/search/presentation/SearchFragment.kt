@@ -122,6 +122,30 @@ class SearchFragment : Fragment() {
         )
     }
 
+    private fun setupFilterListeners() {
+        with(binding.searchWidget) {
+            setupFilterListenerFor(age) { item ->
+                viewModel.onEvent(SearchEvent.AgeValueSelected(item))
+            }
+
+            setupFilterListenerFor(type) { item ->
+                viewModel.onEvent(SearchEvent.TypeValueSelected(item))
+            }
+        }
+    }
+
+    private fun setupFilterListenerFor(
+        filter: AutoCompleteTextView,
+        block: (item: String) -> Unit
+    ) {
+        filter.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, _, position, _ ->
+                parent?.let {
+                    block(it.adapter.getItem(position) as String)
+                }
+            }
+    }
+
     private fun observeViewStateUpdates(searchAdapter: AnimalsAdapter) {
         viewModel.state.observe(viewLifecycleOwner) {
             updateScreenState(it, searchAdapter)
