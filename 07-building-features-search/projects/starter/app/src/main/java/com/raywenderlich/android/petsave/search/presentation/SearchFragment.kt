@@ -51,6 +51,7 @@ import com.raywenderlich.android.petsave.R
 import com.raywenderlich.android.petsave.common.presentation.AnimalsAdapter
 import com.raywenderlich.android.petsave.common.presentation.Event
 import com.raywenderlich.android.petsave.databinding.FragmentSearchBinding
+import com.raywenderlich.android.petsave.search.domain.usecases.GetSearchFilters
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -123,6 +124,25 @@ class SearchFragment : Fragment() {
         )
     }
 
+    private fun setupFilterValues(
+        filter: AutoCompleteTextView,
+        filterValues: List<String>?
+    ) {
+        if (filterValues == null || filterValues.isEmpty()) return
+
+        filter.setAdapter(createFilterAdapter(filterValues))
+        filter.setText(GetSearchFilters.NO_FILTER_SELECTED, false)
+    }
+
+    private fun createFilterAdapter(adapterValues: List<String>):
+            ArrayAdapter<String> {
+        return ArrayAdapter(
+            requireContext(),
+            R.layout.dropdown_menu_popup_item,
+            adapterValues
+        )
+    }
+
     private fun setupFilterListeners() {
         with(binding.searchWidget) {
             setupFilterListenerFor(age) { item ->
@@ -165,6 +185,11 @@ class SearchFragment : Fragment() {
         ) = newState
 
         updateInitialStateViews(inInitialState)
+
+        with(binding.searchWidget) {
+            setupFilterValues(age, ageFilterValues.getContentIfNotHandled())
+            setupFilterValues(type, typeFilterValues.getContentIfNotHandled())
+        }
 
         handleFailures(failure)
     }
