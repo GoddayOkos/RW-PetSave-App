@@ -79,6 +79,7 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupUI()
+        prepareForSearch()
     }
 
     private fun setupUI() {
@@ -187,6 +188,12 @@ class SearchFragment : Fragment() {
         if (snackbarMessage.isNotEmpty()) {
             Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    private fun prepareForSearch() {
+        setupFilterListeners()
+        setupSearchViewListener()
+        viewModel.onEvent(SearchEvent.PrepareForSearch)
     }
 
     override fun onDestroyView() {
