@@ -44,6 +44,7 @@ import com.raywenderlich.android.petsave.common.domain.model.pagination.Paginati
 import com.raywenderlich.android.petsave.common.presentation.model.mappers.UiAnimalMapper
 import com.raywenderlich.android.petsave.common.utils.DispatchersProvider
 import com.raywenderlich.android.petsave.common.utils.createExceptionHandler
+import com.raywenderlich.android.petsave.search.domain.usecases.GetSearchFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -57,6 +58,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchFragmentViewModel @Inject constructor(
     private val uiAnimalMapper: UiAnimalMapper,
+    private val getSearchFilters: GetSearchFilters,
     private val dispatchersProvider: DispatchersProvider,
     private val compositeDisposable: CompositeDisposable
 ): ViewModel() {
@@ -104,7 +106,7 @@ class SearchFragmentViewModel @Inject constructor(
     }
 
     private fun prepareForSearch() {
-        // Add code here
+        loadFilterValues()
     }
 
     private fun createExceptionHandler(message: String): CoroutineExceptionHandler {
