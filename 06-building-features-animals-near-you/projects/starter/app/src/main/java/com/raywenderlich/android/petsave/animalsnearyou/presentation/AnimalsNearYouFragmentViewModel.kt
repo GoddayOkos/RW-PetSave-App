@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.raywenderlich.android.logging.Logger
 import com.raywenderlich.android.petsave.animalsnearyou.domain.usecases.GetAnimals
 import com.raywenderlich.android.petsave.animalsnearyou.domain.usecases.RequestNextPageOfAnimals
+import com.raywenderlich.android.petsave.animalsnearyou.presentation.AnimalNearYouEvent.RequestInitialAnimalsList
+import com.raywenderlich.android.petsave.animalsnearyou.presentation.AnimalNearYouEvent.RequestMoreAnimals
 import com.raywenderlich.android.petsave.common.domain.model.NetworkException
 import com.raywenderlich.android.petsave.common.domain.model.NetworkUnavailableException
 import com.raywenderlich.android.petsave.common.domain.model.NoMoreAnimalsException
@@ -34,9 +36,15 @@ class AnimalsNearYouFragmentViewModel @Inject constructor(
     private val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
 
+    companion object {
+        const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
+    }
+
     val state: LiveData<AnimalsNearYouViewState> get() = _state
     private val _state = MutableLiveData<AnimalsNearYouViewState>()
     private var currentPage = 0
+    var isLoadingMoreAnimals: Boolean = false
+    var isLastPage = false
 
     init {
         _state.value = AnimalsNearYouViewState()
@@ -50,7 +58,8 @@ class AnimalsNearYouFragmentViewModel @Inject constructor(
 
     fun onEvent(event: AnimalNearYouEvent) {
         when (event) {
-            is AnimalNearYouEvent.RequestInitialAnimalsList -> loadAnimals()
+            is RequestInitialAnimalsList -> loadAnimals()
+            is RequestMoreAnimals -> loadNextAnimalPage()
         }
     }
 
