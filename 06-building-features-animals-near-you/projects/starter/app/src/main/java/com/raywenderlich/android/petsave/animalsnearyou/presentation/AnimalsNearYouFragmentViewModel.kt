@@ -91,6 +91,7 @@ class AnimalsNearYouFragmentViewModel @Inject constructor(
     }
 
     private fun loadNextAnimalPage() {
+        isLoadingMoreAnimals = true
         val errorMessage = "Failed to fetch nearby animals"
         val exceptionHandler =
             viewModelScope.createExceptionHandler(errorMessage) { onFailure(it) }
@@ -102,11 +103,13 @@ class AnimalsNearYouFragmentViewModel @Inject constructor(
             }
 
             onPaginationInfoObtained(pagination)
+            isLoadingMoreAnimals = false
         }
     }
 
     private fun onPaginationInfoObtained(pagination: Pagination) {
         currentPage = pagination.currentPage
+        isLastPage = !pagination.canLoadMore
     }
 
     private fun onFailure(failure: Throwable) {
