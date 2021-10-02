@@ -45,6 +45,7 @@ import com.raywenderlich.android.petsave.common.presentation.model.mappers.UiAni
 import com.raywenderlich.android.petsave.common.utils.DispatchersProvider
 import com.raywenderlich.android.petsave.common.utils.createExceptionHandler
 import com.raywenderlich.android.petsave.search.domain.usecases.GetSearchFilters
+import com.raywenderlich.android.petsave.search.presentation.SearchEvent.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -102,7 +103,30 @@ class SearchFragmentViewModel @Inject constructor(
     }
 
     private fun onSearchParametersUpdate(event: SearchEvent) {
-        // Add code here
+       when (event) {
+           is QueryInput -> updateQuery(event.input)
+           is AgeValueSelected -> updateAgeValue(event.age)
+           is TypeValueSelected -> updateTypeValue(event.type)
+       }
+    }
+
+    private fun updateQuery(input: String) {
+        resetPagination()
+        querySubject.onNext(input)
+
+        if (input.isEmpty()) {
+            setNoSearchQueryState()
+        } else {
+            setSearchingState()
+        }
+    }
+
+    private fun updateAgeValue(age: String) {
+        ageSubject.onNext(age)
+    }
+
+    private fun updateTypeValue(type: String) {
+        typeSubject.onNext(type)
     }
 
     private fun prepareForSearch() {
