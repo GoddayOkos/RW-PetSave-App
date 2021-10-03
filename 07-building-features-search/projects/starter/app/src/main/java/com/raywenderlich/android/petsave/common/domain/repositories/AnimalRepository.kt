@@ -51,10 +51,9 @@ interface AnimalRepository {
   fun searchCachedAnimalsBy(searchParameters: SearchParameters):
     Flowable<SearchResults>
 
-//  TODO: Uncomment for remote search
-//  suspend fun searchAnimalsRemotely(
-//      pageToLoad: Int,
-//      searchParameters: SearchParameters,
-//      numberOfItems: Int
-//  ): PaginatedAnimals
+  suspend fun searchAnimalsRemotely(
+      pageToLoad: Int,
+      searchParameters: SearchParameters,
+      numberOfItems: Int
+  ): PaginatedAnimals
 }

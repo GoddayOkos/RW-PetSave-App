@@ -45,6 +45,7 @@ import com.raywenderlich.android.petsave.common.domain.model.pagination.Paginati
 import com.raywenderlich.android.petsave.common.presentation.model.mappers.UiAnimalMapper
 import com.raywenderlich.android.petsave.common.utils.DispatchersProvider
 import com.raywenderlich.android.petsave.common.utils.createExceptionHandler
+import com.raywenderlich.android.petsave.search.domain.model.SearchParameters
 import com.raywenderlich.android.petsave.search.domain.model.SearchResults
 import com.raywenderlich.android.petsave.search.domain.usecases.GetSearchFilters
 import com.raywenderlich.android.petsave.search.domain.usecases.SearchAnimals
@@ -152,10 +153,15 @@ class SearchFragmentViewModel @Inject constructor(
         val (animals, searchParameters) = searchResults
 
         if (animals.isEmpty()) {
-            // todo search remotely
+            onEmptyCacheResult(searchParameters)
         } else {
             onAnimalList(animals)
         }
+    }
+
+    private fun onEmptyCacheResult(searchParameters: SearchParameters) {
+        _state.value = state.value!!.updateToSearchingRemotely()
+        searchRemotely(searchParameters)
     }
 
     private fun createExceptionHandler(message: String): CoroutineExceptionHandler {
