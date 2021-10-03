@@ -185,6 +185,7 @@ class SearchFragment : Fragment() {
         ) = newState
 
         updateInitialStateViews(inInitialState)
+        searchAdapter.submitList(searchResults)
 
         with(binding.searchWidget) {
             setupFilterValues(age, ageFilterValues.getContentIfNotHandled())
