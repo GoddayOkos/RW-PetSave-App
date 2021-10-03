@@ -49,6 +49,7 @@ import com.raywenderlich.android.petsave.search.domain.model.SearchParameters
 import com.raywenderlich.android.petsave.search.domain.model.SearchResults
 import com.raywenderlich.android.petsave.search.domain.usecases.GetSearchFilters
 import com.raywenderlich.android.petsave.search.domain.usecases.SearchAnimals
+import com.raywenderlich.android.petsave.search.domain.usecases.SearchAnimalsRemotely
 import com.raywenderlich.android.petsave.search.presentation.SearchEvent.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -64,6 +65,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchFragmentViewModel @Inject constructor(
     private val uiAnimalMapper: UiAnimalMapper,
+    private val searchAnimalsRemotely: SearchAnimalsRemotely,
     private val searchAnimals: SearchAnimals,
     private val getSearchFilters: GetSearchFilters,
     private val dispatchersProvider: DispatchersProvider,
@@ -162,6 +164,18 @@ class SearchFragmentViewModel @Inject constructor(
     private fun onEmptyCacheResult(searchParameters: SearchParameters) {
         _state.value = state.value!!.updateToSearchingRemotely()
         searchRemotely(searchParameters)
+    }
+
+    private fun searchRemotely(searchParameters: SearchParameters) {
+        val exceptionHandler = createExceptionHandler("Failed to search remotely.")
+
+        viewModelScope.launch(exceptionHandler) {
+            val pagination = withContext(dispatchersProvider.io()) {
+                Logger.d("Searching remotely...")
+                searchAnimalsRemotely(++currentPage, searchParameters)
+            }
+            onPaginationInfoObtained(pagination)
+        }
     }
 
     private fun createExceptionHandler(message: String): CoroutineExceptionHandler {

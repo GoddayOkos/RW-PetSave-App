@@ -122,26 +122,25 @@ class PetFinderAnimalRepository @Inject constructor(
             }.map { SearchResults(it, searchParameters) }
     }
 
-//  TODO: Uncomment for remote search
-//  override suspend fun searchAnimalsRemotely(
-//      pageToLoad: Int,
-//      searchParameters: SearchParameters,
-//      numberOfItems: Int
-//  ): PaginatedAnimals {
-//
-//    val (apiAnimals, apiPagination) = api.searchAnimalsBy(
-//        searchParameters.name,
-//        searchParameters.age,
-//        searchParameters.type,
-//        pageToLoad,
-//        numberOfItems,
-//        postcode,
-//        maxDistanceMiles
-//    )
-//
-//    return PaginatedAnimals(
-//        apiAnimals?.map { apiAnimalMapper.mapToDomain(it) }.orEmpty(),
-//        apiPaginationMapper.mapToDomain(apiPagination)
-//    )
-//  }
+  override suspend fun searchAnimalsRemotely(
+      pageToLoad: Int,
+      searchParameters: SearchParameters,
+      numberOfItems: Int
+  ): PaginatedAnimals {
+
+    val (apiAnimals, apiPagination) = api.searchAnimalsBy(
+        searchParameters.name,
+        searchParameters.age,
+        searchParameters.type,
+        pageToLoad,
+        numberOfItems,
+        postcode,
+        maxDistanceMiles
+    )
+
+    return PaginatedAnimals(
+        apiAnimals?.map { apiAnimalMapper.mapToDomain(it) }.orEmpty(),
+        apiPaginationMapper.mapToDomain(apiPagination)
+    )
+  }
 }
