@@ -46,6 +46,8 @@ import com.raywenderlich.android.petsave.common.domain.model.animal.details.Age
 import com.raywenderlich.android.petsave.common.domain.model.animal.details.AnimalWithDetails
 import com.raywenderlich.android.petsave.common.domain.model.pagination.PaginatedAnimals
 import com.raywenderlich.android.petsave.common.domain.repositories.AnimalRepository
+import com.raywenderlich.android.petsave.search.domain.model.SearchParameters
+import com.raywenderlich.android.petsave.search.domain.model.SearchResults
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import io.reactivex.Flowable
 import retrofit2.HttpException
@@ -105,6 +107,20 @@ class PetFinderAnimalRepository @Inject constructor(
   override fun getAnimalAges(): List<Age> {
     return Age.values().toList()
   }
+
+    override fun searchCachedAnimalsBy(searchParameters: SearchParameters):
+            Flowable<SearchResults> {
+        val (name, age, type) = searchParameters
+
+        return cache.searchAnimalsBy(name, age, type)
+            .distinctUntilChanged()
+            .map { animalList ->
+                animalList.map {
+                    it.animal.toAnimalDomain(it.photos,
+                    it.videos, it.tags)
+                }
+            }.map { SearchResults(it, searchParameters) }
+    }
 
 //  TODO: Uncomment for remote search
 //  override suspend fun searchAnimalsRemotely(
