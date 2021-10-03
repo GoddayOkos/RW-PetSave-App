@@ -38,6 +38,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.raywenderlich.android.logging.Logger
 import com.raywenderlich.android.petsave.common.domain.model.NoMoreAnimalsException
 import com.raywenderlich.android.petsave.common.domain.model.animal.Animal
 import com.raywenderlich.android.petsave.common.domain.model.pagination.Pagination

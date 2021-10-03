@@ -34,14 +34,15 @@ abstract class AnimalsDao {
     abstract suspend fun getAllTypes(): List<String>
 
     @Transaction
-    @Query(
-        """
-      SELECT * FROM animals WHERE name LIKE '%' || :name || '%' 
-AND age LIKE '%' || :age || '%' AND type LIKE '%' || :type || '%'
-  """
-    )
+    @Query("""
+      SELECT * FROM animals
+        WHERE name LIKE '%' || :name || '%' AND
+        AGE LIKE '%' || :age || '%'
+        AND type LIKE '%' || :type || '%'
+  """)
     abstract fun searchAnimalsBy(
-        name: String, age: String,
+        name: String,
+        age: String,
         type: String
     ): Flowable<List<CachedAnimalAggregate>>
 }

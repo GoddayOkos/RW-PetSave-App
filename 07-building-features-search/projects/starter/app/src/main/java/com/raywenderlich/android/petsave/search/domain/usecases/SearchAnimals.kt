@@ -25,7 +25,7 @@ class SearchAnimals @Inject constructor(
         ageSubject: BehaviorSubject<String>,
         typeSubject: BehaviorSubject<String>
     ): Flowable<SearchResults> {
-        val query = querySubject.debounce(500L, TimeUnit.SECONDS)
+        val query = querySubject.debounce(500L, TimeUnit.MILLISECONDS)
             .map { it.trim() }
             .filter { it.length >= 2 }
 
