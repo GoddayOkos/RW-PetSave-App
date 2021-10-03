@@ -44,11 +44,14 @@ import com.raywenderlich.android.petsave.common.domain.model.pagination.Paginati
 import com.raywenderlich.android.petsave.common.presentation.model.mappers.UiAnimalMapper
 import com.raywenderlich.android.petsave.common.utils.DispatchersProvider
 import com.raywenderlich.android.petsave.common.utils.createExceptionHandler
+import com.raywenderlich.android.petsave.search.domain.model.SearchResults
 import com.raywenderlich.android.petsave.search.domain.usecases.GetSearchFilters
+import com.raywenderlich.android.petsave.search.domain.usecases.SearchAnimals
 import com.raywenderlich.android.petsave.search.presentation.SearchEvent.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -59,6 +62,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchFragmentViewModel @Inject constructor(
     private val uiAnimalMapper: UiAnimalMapper,
+    private val searchAnimals: SearchAnimals,
     private val getSearchFilters: GetSearchFilters,
     private val dispatchersProvider: DispatchersProvider,
     private val compositeDisposable: CompositeDisposable
@@ -131,6 +135,26 @@ class SearchFragmentViewModel @Inject constructor(
 
     private fun prepareForSearch() {
         loadFilterValues()
+        setupSearchSubscription()
+    }
+
+    private fun setupSearchSubscription() {
+        searchAnimals(querySubject, ageSubject, typeSubject)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { onSearchResults(it) },
+                { onFailure(it) }
+            ).addTo(compositeDisposable)
+    }
+
+    private fun onSearchResults(searchResults: SearchResults) {
+        val (animals, searchParameters) = searchResults
+
+        if (animals.isEmpty()) {
+            // todo search remotely
+        } else {
+            onAnimalList(animals)
+        }
     }
 
     private fun createExceptionHandler(message: String): CoroutineExceptionHandler {
