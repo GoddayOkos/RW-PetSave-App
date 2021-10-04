@@ -175,6 +175,7 @@ class SearchFragmentViewModel @Inject constructor(
             }
             onPaginationInfoObtained(pagination)
         }
+        remoteSearchJob.invokeOnCompletion { it?.printStackTrace() }
     }
 
     private fun createExceptionHandler(message: String): CoroutineExceptionHandler {
