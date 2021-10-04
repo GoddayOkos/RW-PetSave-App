@@ -56,10 +56,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,6 +69,7 @@ class SearchFragmentViewModel @Inject constructor(
     private val compositeDisposable: CompositeDisposable
 ): ViewModel() {
 
+    private var remoteSearchJob: Job = Job()
     val state: LiveData<SearchViewState> get() = _state
 
     private val _state: MutableLiveData<SearchViewState> = MutableLiveData()
@@ -105,12 +103,13 @@ class SearchFragmentViewModel @Inject constructor(
 
     fun onEvent(event: SearchEvent) {
         when(event) {
-            is SearchEvent.PrepareForSearch -> prepareForSearch()
+            is PrepareForSearch -> prepareForSearch()
             else -> onSearchParametersUpdate(event)
         }
     }
 
     private fun onSearchParametersUpdate(event: SearchEvent) {
+        remoteSearchJob.cancel(CancellationException("New search parameters incoming!"))
        when (event) {
            is QueryInput -> updateQuery(event.input)
            is AgeValueSelected -> updateAgeValue(event.age)
@@ -169,7 +168,7 @@ class SearchFragmentViewModel @Inject constructor(
     private fun searchRemotely(searchParameters: SearchParameters) {
         val exceptionHandler = createExceptionHandler("Failed to search remotely.")
 
-        viewModelScope.launch(exceptionHandler) {
+        remoteSearchJob = viewModelScope.launch(exceptionHandler) {
             val pagination = withContext(dispatchersProvider.io()) {
                 Logger.d("Searching remotely...")
                 searchAnimalsRemotely(++currentPage, searchParameters)
