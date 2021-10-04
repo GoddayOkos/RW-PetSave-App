@@ -49,6 +49,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.raywenderlich.android.petsave.R
 import com.raywenderlich.android.petsave.RxImmediateSchedulerRule
 import com.raywenderlich.android.petsave.TestCoroutineRule
+import com.raywenderlich.android.petsave.common.data.FakeRepository
 import com.raywenderlich.android.petsave.common.data.di.CacheModule
 import com.raywenderlich.android.petsave.common.data.di.PreferencesModule
 import com.raywenderlich.android.petsave.common.di.ActivityRetainedModule
@@ -91,10 +92,20 @@ class SearchFragmentTest {
   @Test
   fun searchFragment_testSearch_success() {
     // Given
+    val nameToSearch = FakeRepository().remotelySearchableAnimal.name
+    launchFragmentInHiltContainer<SearchFragment>()
 
     // When
+    with(onView(withId(R.id.search))) {
+      perform(click())
+      perform(typeSearchViewText(nameToSearch))
+    }
 
     // Then
+    with(onView(withId(R.id.searchRecyclerView))) {
+      check(matches(childCountIs(1)))
+      check(matches(hasDescendant(withText(nameToSearch))))
+    }
   }
 
   private fun typeSearchViewText(text: String): ViewAction {

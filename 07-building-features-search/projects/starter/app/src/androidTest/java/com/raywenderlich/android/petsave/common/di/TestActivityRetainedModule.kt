@@ -34,6 +34,7 @@
 
 package com.raywenderlich.android.petsave.common.di
 
+import com.raywenderlich.android.petsave.common.data.FakeRepository
 import com.raywenderlich.android.petsave.common.domain.repositories.AnimalRepository
 import com.raywenderlich.android.petsave.common.utils.CoroutineDispatchersProvider
 import com.raywenderlich.android.petsave.common.utils.DispatchersProvider
@@ -49,9 +50,9 @@ import io.reactivex.disposables.CompositeDisposable
 @InstallIn(ActivityRetainedComponent::class)
 abstract class TestActivityRetainedModule {
 
-//  @Binds
-//  @ActivityRetainedScoped
-//  abstract fun bindAnimalRepository(repository: FakeRepository): AnimalRepository
+  @Binds
+  @ActivityRetainedScoped
+  abstract fun bindAnimalRepository(repository: FakeRepository): AnimalRepository
 
   @Binds
   abstract fun bindDispatchersProvider(dispatchersProvider: CoroutineDispatchersProvider):
