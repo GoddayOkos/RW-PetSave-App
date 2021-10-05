@@ -43,8 +43,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.raywenderlich.android.petsave.R
-import com.raywenderlich.android.petsave.databinding.FragmentOnboardingBinding
+import com.raywenderlich.android.petsave.onboarding.R
+import com.raywenderlich.android.petsave.onboarding.databinding.FragmentOnboardingBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
@@ -126,7 +126,7 @@ class OnboardingFragment: Fragment() {
   }
 
   private fun navigateToAnimalsNearYou() {
-    findNavController().navigate(R.id.action_onboardingFragment_to_animalsNearYou)
+   // findNavController().navigate(R.id.action_onboardingFragment_to_animalsNearYou)
   }
 
   override fun onDestroyView() {

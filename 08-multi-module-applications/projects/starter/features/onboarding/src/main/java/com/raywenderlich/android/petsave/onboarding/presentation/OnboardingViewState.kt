@@ -35,7 +35,7 @@
 package com.raywenderlich.android.petsave.onboarding.presentation
 
 import androidx.annotation.StringRes
-import com.raywenderlich.android.petsave.R
+import com.raywenderlich.android.petsave.onboarding.R
 
 data class OnboardingViewState(
     val postcode: String = "",
