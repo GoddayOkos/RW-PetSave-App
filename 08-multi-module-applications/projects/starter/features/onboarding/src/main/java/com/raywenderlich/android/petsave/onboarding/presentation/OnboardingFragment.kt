@@ -38,10 +38,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.raywenderlich.android.petsave.onboarding.R
 import com.raywenderlich.android.petsave.onboarding.databinding.FragmentOnboardingBinding
@@ -126,7 +129,17 @@ class OnboardingFragment: Fragment() {
   }
 
   private fun navigateToAnimalsNearYou() {
-   // findNavController().navigate(R.id.action_onboardingFragment_to_animalsNearYou)
+   val deepLink = NavDeepLinkRequest.Builder
+     .fromUri("petsave://animalsnearyou".toUri())
+     .build()
+
+    val navOptions = NavOptions.Builder()
+      .setPopUpTo(R.id.nav_onboarding, true)
+      .setEnterAnim(R.anim.nav_default_enter_anim)
+      .setExitAnim(R.anim.nav_default_exit_anim)
+      .build()
+
+    findNavController().navigate(deepLink, navOptions)
   }
 
   override fun onDestroyView() {
