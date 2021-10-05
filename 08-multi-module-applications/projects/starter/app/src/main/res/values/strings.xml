@@ -11,4 +11,5 @@
   <string name="distance_error">It\'s over 500!!!</string>
   <string name="distance_error_cannot_be_zero">Has to be higher than zero :)</string>
   <string name="no_error" />
+  <string name="empty_distance_error">"Distance must be specified!"</string>
 </resources>

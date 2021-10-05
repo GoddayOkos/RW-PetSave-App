@@ -90,6 +90,7 @@ class OnboardingFragmentViewModel @Inject constructor(
 
   private fun validateNewDistanceValue(newDistance: String) {
     val distanceError = when {
+      newDistance.isBlank() -> {R.string.empty_distance_error}
       newDistance.isNotEmpty() && newDistance.toInt() > 500 -> { R.string.distance_error }
       newDistance.toInt() == 0 -> { R.string.distance_error_cannot_be_zero }
       else -> { R.string.no_error }
